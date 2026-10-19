@@ -1,8 +1,8 @@
-<h1 align="center">
+<div align="center">
 
 # CipherVault Backend
 
-</h1>
+</div>
 
 The CipherVault backend is a Python FastAPI application that provides REST API endpoints for health checks and SHA-256 hash generation.
 

@@ -1,8 +1,8 @@
-<h1 align="center">
+<div align="center">
 
 # ◈ CipherVault
 
-</h1>
+</div>
 
 ### A Beginner-Friendly Cryptography Learning Platform
 

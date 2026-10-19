@@ -1,8 +1,8 @@
-<h1 align="center">
+<div align="center">
 
 # CipherVault Frontend
 
-</h1>
+</div>
 
 The CipherVault frontend is a web application built with Next.js, React, JavaScript, and Tailwind CSS. It provides an interactive interface for exploring cryptography concepts and using the SHA-256 hash generator.
 
