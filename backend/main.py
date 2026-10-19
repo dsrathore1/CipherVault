@@ -1,12 +1,28 @@
-from fastapi import FastAPI
 import hashlib
+
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="CipherVault API",
     description="CipherVault is a secure and user-friendly platform for managing and encrypting sensitive data. Our API provides endpoints for encryption, decryption, and secure storage of your confidential information.",
     version="1.0.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
+    
+)
+
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to CipherVault API! Visit /docs for API documentation."}
 
 
 @app.get("/health", tags=["Health Check"])
@@ -29,7 +45,7 @@ class HashRequest(BaseModel):
 
 @app.post("/hash", tags=["Hashing"])
 def create_hash(request: HashRequest):
-    text_bytes = request.text.encode("utf-8") #! Convert the input text into bytes
+    text_bytes = request.text.encode("utf-8")  #! Convert the input text into bytes
     hash_value = hashlib.sha256(text_bytes).hexdigest()
 
     return {"algorithm": "SHA-256", "input": request.text, "hash": hash_value}
