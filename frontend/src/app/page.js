@@ -7,7 +7,7 @@ const features = [
     title: "SHA-256 Hashing",
     description:
       "Generate secure hashes and understand how digital fingerprints work.",
-    status: "Explore soon",
+    status: "Explore Now",
   },
   {
     number: "02",
@@ -43,18 +43,18 @@ export default function Home() {
           </Link>
 
           <div className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
-            <a href="#home" className="text-violet-700">
+            <Link href="#home" className="text-violet-700">
               Home
-            </a>
-            <a href="#about" className="transition hover:text-violet-700">
+            </Link>
+            <Link href="#about" className="transition hover:text-violet-700">
               About
-            </a>
-            <a href="#tools" className="transition hover:text-violet-700">
+            </Link>
+            <Link href="#tools" className="transition hover:text-violet-700">
               Tools
-            </a>
-            <a href="#learn" className="transition hover:text-violet-700">
+            </Link>
+            <Link href="#learn" className="transition hover:text-violet-700">
               Learn
-            </a>
+            </Link>
           </div>
 
           <span className="rounded-full border border-violet-100 bg-white px-4 py-2 text-sm font-medium text-violet-700 shadow-sm">
@@ -93,18 +93,18 @@ export default function Home() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <a
+            <Link
               href="#tools"
               className="rounded-2xl bg-linear-to-r from-violet-600 to-purple-700 px-6 py-3.5 font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:shadow-xl"
             >
               ✦ Explore Tools →
-            </a>
-            <a
+            </Link>
+            <Link
               href="#learn"
               className="rounded-2xl border border-violet-200 bg-white px-6 py-3.5 font-semibold text-violet-800 transition hover:bg-violet-50"
             >
               ♧ Learn the Basics
-            </a>
+            </Link>
           </div>
 
           <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-600">
@@ -162,32 +162,62 @@ export default function Home() {
           </p>
         </div>
 
+
+
         <div className="grid gap-5 md:grid-cols-3">
-          {features.map((feature) => (
-            <article
-              key={feature.number}
-              className="group rounded-3xl border border-violet-100 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-100/80"
-            >
-              <div className="flex items-center justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 font-bold text-violet-700">
-                  {feature.number}
-                </span>
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-violet-100 to-purple-200 text-3xl text-violet-700 shadow-inner">
-                  {feature.symbol}
-                </span>
-              </div>
+          {features.map((feature) => {
+            const isSha = feature.number === "01";
 
-              <h3 className="mt-6 text-xl font-extrabold">{feature.title}</h3>
-              <p className="mt-3 min-h-14 leading-7 text-slate-600">
-                {feature.description}
-              </p>
+            const cardClass =
+              "group rounded-3xl border border-violet-100 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-100/80";
 
-              <p className="mt-5 inline-flex rounded-full bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700">
-                {feature.status} <span className="ml-2">→</span>
-              </p>
-            </article>
-          ))}
+            return (
+              <article key={feature.number} className={cardClass}>
+                <div className="flex items-center justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 font-bold text-violet-700">
+                    {feature.number}
+                  </span>
+
+                  {isSha ? (
+                    <Link
+                      href="/hash"
+                      aria-label="Open SHA-256 hash generator"
+                      className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-violet-100 to-purple-200 text-3xl text-violet-700 shadow-inner transition hover:scale-105"
+                    >
+                      {feature.symbol}
+                    </Link>
+                  ) : (
+                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-violet-100 to-purple-200 text-3xl text-violet-700 shadow-inner">
+                      {feature.symbol}
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="mt-6 text-xl font-extrabold">
+                  {feature.title}
+                </h3>
+
+                <p className="mt-3 min-h-14 leading-7 text-slate-600">
+                  {feature.description}
+                </p>
+
+                {isSha ? (
+                  <Link
+                    href="/hash"
+                    className="mt-5 inline-flex rounded-full bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-100"
+                  >
+                    Explore Now <span className="ml-2">→</span>
+                  </Link>
+                ) : (
+                  <p className="mt-5 inline-flex rounded-full bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700">
+                    {feature.status} <span className="ml-2">→</span>
+                  </p>
+                )}
+              </article>
+            );
+          })}
         </div>
+
       </section>
 
       <section
