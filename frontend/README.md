@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 algin="center">
 
-## Getting Started
+# CipherVault Frontend
 
-First, run the development server:
+</h1>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The CipherVault frontend is a web application built with Next.js, React, JavaScript, and Tailwind CSS. It provides an interactive interface for exploring cryptography concepts and using the SHA-256 hash generator.
+
+The application features a lavender and purple visual theme designed to make the learning experience clean and beginner-friendly.
+
+## ✨ Features
+
+- Lavender-themed landing page.
+- SHA-256 hash generator interface.
+- Input validation and error handling.
+- Copy-to-clipboard functionality with feedback.
+- Backend connection testing.
+- Client-side navigation using Next.js `Link`.
+- Learning cards for SHA-256, RSA, and ECC.
+
+## 🛠️ Technology Stack
+
+- Next.js
+- React
+- JavaScript
+- Tailwind CSS
+- Fetch API
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Install Node.js and npm.
+
+### 1. Navigate to the frontend directory
+
+```powershell
+cd "$HOME\CipherVault\frontend"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```powershell
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Start the development server
 
-## Learn More
+```powershell
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open the application:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`http://localhost:3000`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📄 Application Pages
 
-## Deploy on Vercel
+| Route | Description |
+|---|---|
+| `/` | Main landing page |
+| `/hash` | SHA-256 hash generator |
+| `/connection-test` | Backend connectivity test |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔌 Backend Integration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The frontend communicates with the FastAPI backend running locally at:
+
+`http://127.0.0.1:8000`
+
+The hash generator sends a POST request to `/hash`. The connection-test page checks the `/health` endpoint.
+
+Ensure that the backend is running before testing these features.
+
+## 🧪 Development Commands
+
+```powershell
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
+
+- `npm run dev` starts the development server.
+- `npm run build` builds the application for production.
+- `npm run start` starts the production server after a successful build.
+- `npm run lint` runs the configured linting command, provided it exists in `package.json`.
+
+## 🎨 Design Principles
+
+- Light lavender and purple color palette.
+- Rounded cards and subtle shadows.
+- Clear typography and readable layouts.
+- Responsive design.
+- Simple navigation and beginner-friendly interactions.
+
+## 🗺️ Planned Improvements
+
+- RSA cryptography tools.
+- ECC cryptography tools.
+- More interactive explanations.
+- Additional practical cryptography examples.
+
+## 📌 Project Status
+
+The SHA-256 interface and backend integration are implemented. RSA and ECC remain planned features.
+
+## 🔒 Development Note
+
+The frontend depends on the FastAPI backend for hash generation and backend connectivity checks. Do not expose private keys, credentials, or other secrets in frontend code.
