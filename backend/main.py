@@ -11,10 +11,14 @@ from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
 app = FastAPI(
     title="CipherVault API",
-    description="CipherVault is a secure and user-friendly platform for managing and encrypting sensitive data. Our API provides endpoints for encryption, decryption, and secure storage of your confidential information.",
+    description=(
+        "CipherVault is a cryptography learning platform featuring "
+        "SHA-256 hashing and RSA encryption/decryption demonstrations."
+    ),
     version="1.0.0",
 )
 
+# Allow requests from the Next.js development frontend.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -24,11 +28,17 @@ app.add_middleware(
 )
 
 
+# -----------------------------
+# Root endpoint
+# -----------------------------
 @app.get("/")
 def root():
     return {"message": "Welcome to CipherVault API! Visit /docs for API documentation."}
 
 
+# -----------------------------
+# Health-check endpoint
+# -----------------------------
 @app.get("/health", tags=["Health Check"])
 def health_check():
     return {
@@ -39,38 +49,65 @@ def health_check():
     }
 
 
+# -----------------------------
+# SHA-256 hashing endpoint
+# -----------------------------
 class HashRequest(BaseModel):
     text: str = Field(
         min_length=1,
         max_length=1000,
-        description="The text to be hashed. Must be between 1 and 1000 characters, calculate the SHA-256 hash for",
+        description="Text to hash using SHA-256.",
     )
 
 
 @app.post("/hash", tags=["Hashing"])
 def create_hash(request: HashRequest):
-    text_bytes = request.text.encode("utf-8")  #! Convert the input text into bytes
+    text_bytes = request.text.encode("utf-8")
     hash_value = hashlib.sha256(text_bytes).hexdigest()
 
-    return {"algorithm": "SHA-256", "input": request.text, "hash": hash_value}
+    return {
+        "algorithm": "SHA-256",
+        "input": request.text,
+        "hash": hash_value,
+    }
 
 
-"""
-TODO (DONE): Add more endpoints for encryption and decryption.
+# -----------------------------
+# RSA request model
+# -----------------------------
+class RSARequest(BaseModel):
+    text: str = Field(
+        min_length=1,
+        max_length=190,
+        description=(
+            "Text to encrypt and decrypt using RSA-2048. "
+            "The UTF-8 encoded message must not exceed 190 bytes."
+        ),
+    )
 
-* - import hashlib	            Loads Python's built-in hashing library.
-* - HashRequest	                Defines the input expected by our API.
-* - encode("utf-8")	            Converts text into bytes for hashing.
-* - hashlib.sha256(...)	        Calculates the SHA-256 digest.
-* - hexdigest()	                Converts the digest into 64 hexadecimal characters.
-* - @app.post("/hash")          Creates an API endpoint that accepts text using HTTP POST.
 
-"""
-
-
-@app.post("/rsa/encrypt-decrypt", tags=["RSA Encryption/Decryption"])
-def rsa_encrypt_decrypt(request: HashRequest):
+# -----------------------------
+# RSA encryption/decryption endpoint
+# -----------------------------
+@app.post(
+    "/rsa/encrypt-decrypt",
+    tags=["RSA Encryption/Decryption"],
+)
+def rsa_encrypt_decrypt(request: RSARequest):
     try:
+        # Encode the message once and validate its actual byte length.
+        message_bytes = request.text.encode("utf-8")
+
+        # RSA-2048 with OAEP and SHA-256 supports at most 190 plaintext bytes.
+        if len(message_bytes) > 190:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Message is too long for RSA-2048 OAEP with SHA-256. "
+                    "Use a message of at most 190 UTF-8 bytes."
+                ),
+            )
+
         # Generate a fresh 2048-bit RSA key pair.
         private_key = rsa.generate_private_key(
             public_exponent=65537,
@@ -79,9 +116,9 @@ def rsa_encrypt_decrypt(request: HashRequest):
 
         public_key = private_key.public_key()
 
-        # Encrypt using the public key and RSA-OAEP with SHA-256.
+        # Encrypt with the public key using RSA-OAEP and SHA-256.
         ciphertext = public_key.encrypt(
-            request.text.encode("utf-8"),
+            message_bytes,
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
@@ -89,7 +126,7 @@ def rsa_encrypt_decrypt(request: HashRequest):
             ),
         )
 
-        # Decrypt using the corresponding private key.
+        # Decrypt with the matching private key.
         plaintext = private_key.decrypt(
             ciphertext,
             padding.OAEP(
@@ -99,7 +136,9 @@ def rsa_encrypt_decrypt(request: HashRequest):
             ),
         )
 
-        # Export the public key for educational display.
+        decrypted_message = plaintext.decode("utf-8")
+
+        # Export only the public key in PEM format.
         public_pem = public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
@@ -110,10 +149,14 @@ def rsa_encrypt_decrypt(request: HashRequest):
             "padding": "OAEP with SHA-256",
             "original_message": request.text,
             "encrypted_message": base64.b64encode(ciphertext).decode("ascii"),
-            "decrypted_message": plaintext.decode("utf-8"),
+            "decrypted_message": decrypted_message,
             "public_key": public_pem,
-            "success": plaintext.decode("utf-8") == request.text,
+            "success": decrypted_message == request.text,
         }
+
+    except HTTPException:
+        # Preserve intentional HTTP errors, including validation errors.
+        raise
 
     except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
         raise HTTPException(
