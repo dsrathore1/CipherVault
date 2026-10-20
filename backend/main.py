@@ -1,8 +1,13 @@
 import hashlib
+import base64
+import binascii
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
+
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
 app = FastAPI(
     title="CipherVault API",
@@ -16,7 +21,6 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
-    
 )
 
 
@@ -62,3 +66,57 @@ TODO (DONE): Add more endpoints for encryption and decryption.
 * - @app.post("/hash")          Creates an API endpoint that accepts text using HTTP POST.
 
 """
+
+
+@app.post("/rsa/encrypt-decrypt", tags=["RSA Encryption/Decryption"])
+def rsa_encrypt_decrypt(request: HashRequest):
+    try:
+        # Generate a fresh 2048-bit RSA key pair.
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048,
+        )
+
+        public_key = private_key.public_key()
+
+        # Encrypt using the public key and RSA-OAEP with SHA-256.
+        ciphertext = public_key.encrypt(
+            request.text.encode("utf-8"),
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None,
+            ),
+        )
+
+        # Decrypt using the corresponding private key.
+        plaintext = private_key.decrypt(
+            ciphertext,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None,
+            ),
+        )
+
+        # Export the public key for educational display.
+        public_pem = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        ).decode("utf-8")
+
+        return {
+            "algorithm": "RSA-2048",
+            "padding": "OAEP with SHA-256",
+            "original_message": request.text,
+            "encrypted_message": base64.b64encode(ciphertext).decode("ascii"),
+            "decrypted_message": plaintext.decode("utf-8"),
+            "public_key": public_pem,
+            "success": plaintext.decode("utf-8") == request.text,
+        }
+
+    except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
+        raise HTTPException(
+            status_code=400,
+            detail="RSA operation failed for the supplied message.",
+        ) from exc
