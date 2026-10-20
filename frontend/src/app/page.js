@@ -7,7 +7,7 @@ const features = [
     title: "SHA-256 Hashing",
     description:
       "Generate secure hashes and understand how digital fingerprints work.",
-    status: "Explore Now",
+    status: "Explore SHA-256",
   },
   {
     number: "02",
@@ -15,7 +15,7 @@ const features = [
     title: "RSA Cryptography",
     description:
       "Explore public and private keys, digital signatures, and verification.",
-    status: "Coming next",
+    status: "Explore RSA",
   },
   {
     number: "03",
@@ -46,13 +46,22 @@ export default function Home() {
             <Link href="#home" className="text-violet-700">
               Home
             </Link>
-            <Link href="#about" className="transition hover:text-violet-700">
+            <Link
+              href="#about"
+              className="transition hover:text-violet-700"
+            >
               About
             </Link>
-            <Link href="#tools" className="transition hover:text-violet-700">
+            <Link
+              href="#tools"
+              className="transition hover:text-violet-700"
+            >
               Tools
             </Link>
-            <Link href="#learn" className="transition hover:text-violet-700">
+            <Link
+              href="#learn"
+              className="transition hover:text-violet-700"
+            >
               Learn
             </Link>
           </div>
@@ -99,6 +108,7 @@ export default function Home() {
             >
               ✦ Explore Tools →
             </Link>
+
             <Link
               href="#learn"
               className="rounded-2xl border border-violet-200 bg-white px-6 py-3.5 font-semibold text-violet-800 transition hover:bg-violet-50"
@@ -162,11 +172,13 @@ export default function Home() {
           </p>
         </div>
 
-
-
         <div className="grid gap-5 md:grid-cols-3">
           {features.map((feature) => {
             const isSha = feature.number === "01";
+            const isRsa = feature.number === "02";
+            const isNavigable = isSha || isRsa;
+
+            const featureHref = isSha ? "/hash" : "/rsa";
 
             const cardClass =
               "group rounded-3xl border border-violet-100 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl hover:shadow-violet-100/80";
@@ -178,10 +190,10 @@ export default function Home() {
                     {feature.number}
                   </span>
 
-                  {isSha ? (
+                  {isNavigable ? (
                     <Link
-                      href="/hash"
-                      aria-label="Open SHA-256 hash generator"
+                      href={featureHref}
+                      aria-label={`Open ${feature.title}`}
                       className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-violet-100 to-purple-200 text-3xl text-violet-700 shadow-inner transition hover:scale-105"
                     >
                       {feature.symbol}
@@ -201,9 +213,9 @@ export default function Home() {
                   {feature.description}
                 </p>
 
-                {isSha ? (
+                {isNavigable ? (
                   <Link
-                    href="/hash"
+                    href={featureHref}
                     className="mt-5 inline-flex rounded-full bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-100"
                   >
                     Explore Now <span className="ml-2">→</span>
@@ -217,7 +229,6 @@ export default function Home() {
             );
           })}
         </div>
-
       </section>
 
       <section
@@ -225,10 +236,26 @@ export default function Home() {
         className="mx-auto mb-12 grid max-w-7xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4"
       >
         {[
-          ["◇", "Beginner Friendly", "Clear explanations and real examples"],
-          ["▤", "Three Core Topics", "SHA-256, RSA, and ECC in one place"],
-          ["♢", "Practical Learning", "Build, experiment, and understand"],
-          ["↗", "Future Ready", "A foundation for real-world cryptography"],
+          [
+            "◇",
+            "Beginner Friendly",
+            "Clear explanations and real examples",
+          ],
+          [
+            "▤",
+            "Three Core Topics",
+            "SHA-256, RSA, and ECC in one place",
+          ],
+          [
+            "♢",
+            "Practical Learning",
+            "Build, experiment, and understand",
+          ],
+          [
+            "↗",
+            "Future Ready",
+            "A foundation for real-world cryptography",
+          ],
         ].map(([symbol, title, description]) => (
           <div
             key={title}
