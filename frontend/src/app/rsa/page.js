@@ -132,6 +132,20 @@ export default function RSAPage() {
                 {error}
               </div>
             )}
+            <div className="mt-3 flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setText("");
+                  setError("");
+                  setResult(null);
+                }}
+                disabled={!text}
+                className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Clear
+              </button>
+            </div>
 
             <button
               type="submit"
