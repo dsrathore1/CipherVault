@@ -2,6 +2,8 @@
 backend/.venv/
 **/__pycache__/
 *.py[cod]
+backend/output.txt
+Notes.txt
 
 # Next.js
 frontend/node_modules/

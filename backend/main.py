@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
 
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from cryptography.hazmat.primitives.asymmetric import padding, rsa, ec
 
 app = FastAPI(
     title="CipherVault API",
@@ -162,4 +162,76 @@ def rsa_encrypt_decrypt(request: RSARequest):
         raise HTTPException(
             status_code=400,
             detail="RSA operation failed for the supplied message.",
+        ) from exc
+
+
+# -----------------------------
+# ECC request model
+# -----------------------------
+
+
+class ECCRequest(BaseModel):
+    text: str = Field(
+        min_length=1,
+        max_length=1000,
+        description=(
+            "Text to sign and verify using ECC (Elliptic Curve Cryptography). "
+            "The UTF-8 encoded message must not exceed 1000 bytes."
+        ),
+    )
+
+
+# -----------------------------
+# ECC digital signature endpoint
+# -----------------------------
+@app.post("/ecc/sign-verify", tags=["ECC Digital Signature"])
+def ecc_sign_verify(request: ECCRequest):
+    try:
+        message_bytes = request.text.encode("utf-8")
+
+        if len(message_bytes) > 1000:
+            raise HTTPException(
+                status_code=400,
+                detail="Message must not exceed 1000 UTF-8 bytes.",
+            )
+
+        # Generate a new ECC private/public key pair.
+        private_key = ec.generate_private_key(ec.SECP256R1())
+        public_key = private_key.public_key()
+
+        # Sign the message with ECDSA and SHA-256.
+        signature = private_key.sign(
+            message_bytes,
+            ec.ECDSA(hashes.SHA256()),
+        )
+
+        # Verify the signature using the public key.
+        public_key.verify(
+            signature,
+            message_bytes,
+            ec.ECDSA(hashes.SHA256()),
+        )
+
+        public_pem = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        ).decode("utf-8")
+
+        return {
+            "algorithm": "ECDSA",
+            "curve": "SECP256R1",
+            "hash_algorithm": "SHA-256",
+            "original_message": request.text,
+            "signature": base64.b64encode(signature).decode("ascii"),
+            "public_key": public_pem,
+            "signature_verified": True,
+        }
+
+    except HTTPException:
+        raise
+
+    except (ValueError, TypeError) as exc:
+        raise HTTPException(
+            status_code=400,
+            detail="ECC signing or verification failed.",
         ) from exc
