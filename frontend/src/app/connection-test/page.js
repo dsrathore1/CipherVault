@@ -14,7 +14,7 @@ export default function ConnectionTestPage() {
     setResult(null);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/health");
+      const response = await fetch("api/health");
 
       if (!response.ok) {
         throw new Error(`Backend returned HTTP ${response.status}`);

@@ -28,7 +28,7 @@ export default function RSAPage() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/rsa/encrypt-decrypt",
+        "/api/rsa/encrypt-decrypt",
         {
           method: "POST",
           headers: {

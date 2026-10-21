@@ -5,7 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ThemeToggle from "../theme-toggle";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "/api";
 
 export default function ECCPage() {
     const [text, setText] = useState("");
