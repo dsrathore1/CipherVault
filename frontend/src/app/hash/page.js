@@ -63,6 +63,12 @@ export default function HashPage() {
         }
     }
 
+    function clearForm() {
+        setText("");
+        setResult(null);
+        setError("");
+        setCopied("");
+    }
 
     return (
         <main className="min-h-screen bg-[#faf8ff] px-6 py-16 text-[#19123d]">
@@ -106,14 +112,23 @@ export default function HashPage() {
                         <div className="mt-2 text-right text-sm text-slate-500">
                             {text.length}/10000 characters
                         </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="mt-4 rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                            {loading ? "Generating..." : "Generate SHA-256 Hash"}
-                        </button>
+                        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="mt-4 rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                                {loading ? "Generating..." : "Generate SHA-256 Hash"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={clearForm}
+                                disabled={!text && !result && !error}
+                                className="mt-4 rounded-xl border border-violet-200 bg-white px-6 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                Clear
+                            </button>
+                        </div>
                     </form>
 
                     {error && (
