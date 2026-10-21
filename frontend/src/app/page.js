@@ -1,8 +1,11 @@
 
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import ThemeToggle from "./theme-toggle";
+import LearningModal from "./content/learning-modal";
+import { learningContent } from "./content/learning-content";
 
 const features = [
   {
@@ -58,8 +61,25 @@ const learningHighlights = [
 ];
 
 export default function Home() {
+  const [selectedLearning, setSelectedLearning] = useState(null);
+
+  function openLearning(title) {
+    const content = learningContent[title];
+
+    if (content) {
+      setSelectedLearning(content);
+    }
+  }
+
+  function closeLearning() {
+    setSelectedLearning(null);
+  }
+
   return (
-    <main className="min-h-screen overflow-hidden bg-[#faf8ff] text-[#19123d] transition-colors duration-200 dark:bg-[#100b1f] dark:text-violet-50">
+    <main
+      id="home"
+      className="min-h-screen overflow-hidden bg-[#faf8ff] text-[#19123d] transition-colors duration-200 dark:bg-[#100b1f] dark:text-violet-50"
+    >
       {/* Navigation */}
       <nav className="border-b border-violet-100 bg-white/70 transition-colors duration-200 dark:border-slate-700 dark:bg-slate-900/80">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5">
@@ -70,7 +90,10 @@ export default function Home() {
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-violet-500 to-purple-800 text-xl text-white shadow-lg shadow-violet-200 dark:shadow-none">
               ◈
             </span>
-            Cipher<span className="-ml-3 text-violet-700 dark:text-violet-300">Vault</span>
+            Cipher
+            <span className="-ml-3 text-violet-700 dark:text-violet-300">
+              Vault
+            </span>
           </Link>
 
           <div className="hidden items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300 md:flex">
@@ -107,10 +130,7 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section
-        id="home"
-        className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-24"
-      >
+      <section className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
         <div className="pointer-events-none absolute -right-32 -top-20 h-96 w-96 rounded-full bg-purple-200/40 blur-3xl dark:bg-purple-900/30" />
 
         <div className="relative z-10">
@@ -209,11 +229,9 @@ export default function Home() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-600 dark:text-violet-300">
             Your learning toolkit
           </p>
-
           <h2 className="mt-2 text-2xl font-extrabold sm:text-3xl">
             Explore the core concepts
           </h2>
-
           <p className="mt-2 text-slate-600 dark:text-slate-300">
             Three essential topics, one practical learning space.
           </p>
@@ -239,9 +257,7 @@ export default function Home() {
                 </Link>
               </div>
 
-              <h3 className="mt-6 text-xl font-extrabold">
-                {feature.title}
-              </h3>
+              <h3 className="mt-6 text-xl font-extrabold">{feature.title}</h3>
 
               <p className="mt-3 min-h-14 leading-7 text-slate-600 dark:text-slate-300">
                 {feature.description}
@@ -251,33 +267,41 @@ export default function Home() {
                 href={feature.href}
                 className="mt-5 inline-flex rounded-full bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-100 dark:bg-violet-950 dark:text-violet-200 dark:hover:bg-violet-900"
               >
-                Explore Now <span className="ml-2">→</span>
+                {feature.status} <span className="ml-2">→</span>
               </Link>
             </article>
           ))}
         </div>
       </section>
 
-      {/* Learning highlights */}
+      {/* Interactive learning highlights */}
       <section
         id="learn"
         className="mx-auto mb-12 grid max-w-7xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4"
       >
         {learningHighlights.map((item) => (
-          <div
+          <button
             key={item.title}
-            className="rounded-2xl border border-violet-100 bg-white/80 p-5 transition-colors duration-200 dark:border-slate-700 dark:bg-slate-900/80"
+            type="button"
+            onClick={() => openLearning(item.title)}
+            aria-haspopup="dialog"
+            className="w-full cursor-pointer rounded-2xl border border-violet-100 bg-white/80 p-5 text-left transition duration-200 hover:-translate-y-1 hover:border-violet-300 hover:shadow-lg hover:shadow-violet-100/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 dark:border-slate-700 dark:bg-slate-900/80 dark:hover:border-violet-500 dark:hover:shadow-none"
           >
             <span className="text-2xl text-violet-600 dark:text-violet-300">
               {item.symbol}
             </span>
+
             <h3 className="mt-3 font-bold">{item.title}</h3>
+
             <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
               {item.description}
             </p>
-          </div>
+          </button>
         ))}
       </section>
+
+      {/* Reusable learning popup */}
+      <LearningModal content={selectedLearning} onClose={closeLearning} />
 
       {/* Footer */}
       <footer className="border-t border-violet-100 bg-white/70 px-6 py-6 text-center text-sm text-slate-500 transition-colors duration-200 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-400">
