@@ -78,6 +78,30 @@ export default function ECCPage() {
         setCopied("");
     }
 
+    const learningSteps = [
+        {
+            number: "01",
+            icon: "🔑",
+            title: "Create a key pair",
+            description:
+                "ECC uses elliptic-curve mathematics to support public-key cryptography. The private key stays secret, while the corresponding public key can be shared.",
+        },
+        {
+            number: "02",
+            icon: "✍️",
+            title: "Sign the message",
+            description:
+                "ECDSA uses the private key to create a digital signature for a message. CipherVault uses SHA-256 as part of this signing process.",
+        },
+        {
+            number: "03",
+            icon: "✓",
+            title: "Verify the signature",
+            description:
+                "The verifier uses the corresponding public key, the message, and the signature to check whether the signature is valid.",
+        },
+    ];
+
     return (
         <main className="min-h-screen bg-linear-to-br from-violet-50 via-white to-purple-100 px-5 py-8 text-slate-800 transition-colors duration-200 dark:from-[#100b1f] dark:via-[#100b1f] dark:to-[#211238] dark:text-slate-100 sm:py-12">
             <div className="mx-auto max-w-4xl">
@@ -131,7 +155,6 @@ export default function ECCPage() {
                                 setError("");
                                 setResult(null);
                             }}
-                            maxLength={1000}
                             rows={5}
                             placeholder="Enter your message here..."
                             className="mt-3 w-full resize-y rounded-xl border border-violet-200 bg-white p-4 text-sm leading-6 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-violet-400 dark:focus:ring-violet-900/40"
@@ -193,8 +216,8 @@ export default function ECCPage() {
 
                                 <span
                                     className={`rounded-full px-3 py-1 text-xs font-bold ${result.signature_verified
-                                            ? "bg-green-100 text-green-800 dark:bg-green-900/60 dark:text-green-200"
-                                            : "bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200"
+                                        ? "bg-green-100 text-green-800 dark:bg-green-900/60 dark:text-green-200"
+                                        : "bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200"
                                         }`}
                                 >
                                     {result.signature_verified
@@ -269,6 +292,168 @@ export default function ECCPage() {
                         </section>
                     )}
                 </section>
+
+                {/* ECC learning guide */}
+                <section
+                    aria-labelledby="ecc-learning-title"
+                    className="mt-8 rounded-3xl border border-violet-100 bg-white/90 p-6 shadow-lg shadow-violet-100/50 transition-colors duration-200 dark:border-slate-700 dark:bg-[#1c1530]/95 dark:shadow-none sm:p-8"
+                >
+                    <p className="text-sm font-bold uppercase tracking-widest text-violet-600 dark:text-violet-300">
+                        Understand the technology
+                    </p>
+
+                    <h2
+                        id="ecc-learning-title"
+                        className="mt-3 text-2xl font-extrabold sm:text-3xl"
+                    >
+                        How ECC Digital Signatures Work
+                    </h2>
+
+                    <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
+                        Elliptic Curve Cryptography (ECC) is a family of public-key
+                        cryptographic techniques based on elliptic-curve mathematics.
+                        This CipherVault demonstration uses ECDSA, the Elliptic Curve
+                        Digital Signature Algorithm, to sign and verify messages.
+                    </p>
+
+                    <div className="mt-7 grid gap-4 sm:grid-cols-3">
+                        {learningSteps.map((step) => (
+                            <article
+                                key={step.number}
+                                className="rounded-2xl border border-violet-100 bg-violet-50/70 p-5 dark:border-slate-700 dark:bg-slate-800/70"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <span className="text-2xl" aria-hidden="true">
+                                        {step.icon}
+                                    </span>
+                                    <span className="text-xs font-extrabold tracking-widest text-violet-500 dark:text-violet-300">
+                                        STEP {step.number}
+                                    </span>
+                                </div>
+
+                                <h3 className="mt-4 font-bold">{step.title}</h3>
+
+                                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                                    {step.description}
+                                </p>
+                            </article>
+                        ))}
+                    </div>
+
+                    <div className="mt-6 overflow-hidden rounded-2xl border border-violet-200 dark:border-violet-800">
+                        <div className="bg-violet-100 px-5 py-3 dark:bg-violet-950/70">
+                            <h3 className="font-bold text-violet-900 dark:text-violet-200">
+                                The signature process
+                            </h3>
+                        </div>
+
+                        <div className="space-y-3 p-5">
+                            <div className="rounded-xl border border-violet-100 bg-white p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+                                <p className="font-bold">Original message</p>
+                                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                    The data you want to sign
+                                </p>
+                            </div>
+
+                            <div className="text-center text-xl font-bold text-violet-500" aria-hidden="true">
+                                ↓
+                            </div>
+
+                            <div className="rounded-xl border border-violet-100 bg-white p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+                                <p className="font-bold">SHA-256 + ECDSA signing</p>
+                                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                    The private key is used to produce a digital signature
+                                </p>
+                            </div>
+
+                            <div className="text-center text-xl font-bold text-violet-500" aria-hidden="true">
+                                ↓
+                            </div>
+
+                            <div className="rounded-xl border border-violet-100 bg-white p-4 text-center dark:border-slate-700 dark:bg-slate-800">
+                                <p className="font-bold">Signature verification</p>
+                                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                    The public key checks the signature against the message
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-6 rounded-2xl border border-violet-200 bg-violet-50 p-5 dark:border-violet-800 dark:bg-violet-950/40">
+                        <h3 className="font-bold text-violet-900 dark:text-violet-200">
+                            What are ECDSA and SECP256R1?
+                        </h3>
+
+                        <p className="mt-2 text-sm leading-7 text-slate-700 dark:text-slate-300">
+                            ECDSA is the algorithm that creates and verifies digital
+                            signatures. SECP256R1 is the elliptic curve used by this
+                            demonstration. SHA-256 is the hash function used in the
+                            signature process.
+                        </p>
+                    </div>
+
+                    <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900 dark:bg-amber-950/30">
+                        <h3 className="font-bold text-amber-900 dark:text-amber-200">
+                            What does a valid signature prove?
+                        </h3>
+
+                        <p className="mt-2 text-sm leading-7 text-amber-900/90 dark:text-amber-100/90">
+                            A valid signature indicates that the signature matches the
+                            message and the public key used for verification. If the
+                            signed message changes, verification should fail. A public
+                            key alone does not prove a real-world identity; that
+                            requires a trusted way to associate the key with its owner.
+                        </p>
+                    </div>
+
+                    <div className="mt-4 rounded-2xl border border-slate-200 p-5 dark:border-slate-700">
+                        <h3 className="font-bold">Why use ECC?</h3>
+
+                        <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                            ECC can provide strong security with comparatively small
+                            keys. It is used in various public-key cryptographic
+                            systems, including digital signatures and key agreement.
+                            This page demonstrates digital signatures, not ECC
+                            encryption.
+                        </p>
+                    </div>
+
+                    <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-slate-200 p-5 dark:border-slate-700 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h3 className="font-bold">Ready to try ECC?</h3>
+                            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                                Enter a message above and observe the signature and
+                                verification result.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                document.getElementById("ecc-message")?.focus();
+                            }}
+                            className="shrink-0 rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white transition hover:bg-violet-800"
+                        >
+                            Try ECC
+                        </button>
+                    </div>
+                </section>
+
+                <footer className="mt-10 flex flex-wrap justify-center gap-5 text-sm text-slate-500 dark:text-slate-400">
+                    <Link
+                        href="/hash"
+                        className="font-semibold text-violet-700 hover:underline dark:text-violet-300"
+                    >
+                        SHA-256 hashing
+                    </Link>
+
+                    <Link
+                        href="/rsa"
+                        className="font-semibold text-violet-700 hover:underline dark:text-violet-300"
+                    >
+                        RSA encryption
+                    </Link>
+                </footer>
             </div>
         </main>
     );
