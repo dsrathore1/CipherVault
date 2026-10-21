@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
+import ThemeToggle from "../theme-toggle";
 
 export default function HashPage() {
     const [text, setText] = useState("");
@@ -15,6 +17,8 @@ export default function HashPage() {
         event.preventDefault();
         setResult(null);
         setError("");
+        setCopied(false);
+        setCopyError("");
 
         if (!text.trim()) {
             setError("Please enter some text to hash.");
@@ -35,22 +39,25 @@ export default function HashPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.detail?.[0]?.msg || "Unable to generate hash.");
+                throw new Error(
+                    data.detail?.[0]?.msg || "Unable to generate hash."
+                );
             }
 
             setResult(data);
         } catch (err) {
             setError(
                 err.message ||
-                "Could not reach the backend. Check that FastAPI is running.",
+                "Could not reach the backend. Check that FastAPI is running."
             );
         } finally {
             setLoading(false);
         }
     }
 
-
     async function copyHash() {
+        if (!result?.hash) return;
+
         try {
             await navigator.clipboard.writeText(result.hash);
             setCopied(true);
@@ -67,21 +74,26 @@ export default function HashPage() {
         setText("");
         setResult(null);
         setError("");
-        setCopied("");
+        setCopied(false);
+        setCopyError("");
     }
 
     return (
-        <main className="min-h-screen bg-[#faf8ff] px-6 py-16 text-[#19123d]">
+        <main className="min-h-screen bg-[#faf8ff] px-6 py-10 text-[#19123d] transition-colors duration-200 dark:bg-[#100b1f] dark:text-violet-50 sm:py-16">
             <div className="mx-auto max-w-3xl">
-                <Link
-                    href="/"
-                    className="font-semibold text-violet-700 hover:underline"
-                >
-                    ← Back to CipherVault
-                </Link>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <Link
+                        href="/"
+                        className="font-semibold text-violet-700 hover:underline dark:text-violet-300"
+                    >
+                        ← Back to CipherVault
+                    </Link>
 
-                <section className="mt-8 rounded-3xl border border-violet-100 bg-white p-6 shadow-xl shadow-violet-100/60 sm:p-10">
-                    <p className="text-sm font-bold uppercase tracking-widest text-violet-600">
+                    <ThemeToggle />
+                </div>
+
+                <section className="mt-8 rounded-3xl border border-violet-100 bg-white p-6 shadow-xl shadow-violet-100/60 transition-colors duration-200 dark:border-slate-700 dark:bg-slate-900 dark:shadow-none sm:p-10">
+                    <p className="text-sm font-bold uppercase tracking-widest text-violet-600 dark:text-violet-300">
                         Cryptography Tool 01
                     </p>
 
@@ -89,13 +101,16 @@ export default function HashPage() {
                         SHA-256 Hash Generator
                     </h1>
 
-                    <p className="mt-4 leading-7 text-slate-600">
+                    <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">
                         Enter text to calculate its SHA-256 digest using the CipherVault
                         Python backend.
                     </p>
 
                     <form onSubmit={generateHash} className="mt-8">
-                        <label htmlFor="hash-input" className="mb-2 block font-semibold">
+                        <label
+                            htmlFor="hash-input"
+                            className="mb-2 block font-semibold"
+                        >
                             Text to hash
                         </label>
 
@@ -106,12 +121,13 @@ export default function HashPage() {
                             maxLength={10000}
                             rows={5}
                             placeholder="Enter text here..."
-                            className="w-full rounded-2xl border border-violet-200 bg-violet-50/40 p-4 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                            className="w-full rounded-2xl border border-violet-200 bg-violet-50/40 p-4 text-[#19123d] outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-100 dark:border-slate-600 dark:bg-slate-800 dark:text-violet-50 dark:placeholder:text-slate-400 dark:focus:border-violet-400 dark:focus:ring-violet-950"
                         />
 
-                        <div className="mt-2 text-right text-sm text-slate-500">
+                        <div className="mt-2 text-right text-sm text-slate-500 dark:text-slate-400">
                             {text.length}/10000 characters
                         </div>
+
                         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <button
                                 type="submit"
@@ -120,11 +136,12 @@ export default function HashPage() {
                             >
                                 {loading ? "Generating..." : "Generate SHA-256 Hash"}
                             </button>
+
                             <button
                                 type="button"
                                 onClick={clearForm}
-                                disabled={!text && !result && !error}
-                                className="mt-4 rounded-xl border border-violet-200 bg-white px-6 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled={!text && !result && !error && !copyError}
+                                className="mt-4 rounded-xl border border-violet-200 bg-white px-6 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-violet-200 dark:hover:bg-slate-700"
                             >
                                 Clear
                             </button>
@@ -134,34 +151,33 @@ export default function HashPage() {
                     {error && (
                         <div
                             role="alert"
-                            className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700"
+                            className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300"
                         >
                             {error}
                         </div>
                     )}
 
                     {result && (
-                        <section className="mt-8 rounded-2xl border border-violet-200 bg-violet-50/70 p-5">
-                            <p className="text-sm font-semibold text-violet-700">
+                        <section className="mt-8 rounded-2xl border border-violet-200 bg-violet-50/70 p-5 dark:border-violet-800 dark:bg-violet-950/40">
+                            <p className="text-sm font-semibold text-violet-700 dark:text-violet-300">
                                 {result.algorithm} Result
                             </p>
 
                             <h2 className="mt-2 font-bold">Your hash</h2>
 
-                            <p className="mt-3 break-all rounded-xl bg-white p-4 font-mono text-sm leading-6">
+                            <p className="mt-3 break-all rounded-xl bg-white p-4 font-mono text-sm leading-6 text-slate-800 dark:bg-slate-800 dark:text-violet-100">
                                 {result.hash}
                             </p>
 
-                            <p className="mt-3 text-sm text-slate-600">
-                                Output length: {result.hash.length} hexadecimal characters (256
-                                bits).
+                            <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                                Output length: {result.hash.length} hexadecimal characters
+                                (256 bits).
                             </p>
-
 
                             <button
                                 type="button"
                                 onClick={copyHash}
-                                className="mt-4 rounded-lg border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-100"
+                                className="mt-4 rounded-lg border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-100 dark:border-slate-600 dark:bg-slate-800 dark:text-violet-200 dark:hover:bg-slate-700"
                             >
                                 {copied ? "✓ Copied!" : "Copy hash"}
                             </button>
@@ -169,7 +185,7 @@ export default function HashPage() {
                             {copied && (
                                 <p
                                     role="status"
-                                    className="mt-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800"
+                                    className="mt-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-900 dark:bg-green-950/50 dark:text-green-300"
                                 >
                                     ✓ Hash copied to clipboard successfully!
                                 </p>
@@ -178,12 +194,11 @@ export default function HashPage() {
                             {copyError && (
                                 <p
                                     role="alert"
-                                    className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                                    className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300"
                                 >
                                     {copyError}
                                 </p>
                             )}
-
                         </section>
                     )}
                 </section>
