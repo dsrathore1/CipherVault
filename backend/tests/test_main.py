@@ -1,10 +1,8 @@
-
 import hashlib
 
 from fastapi.testclient import TestClient
 
 from main import app
-
 
 client = TestClient(app)
 
@@ -51,5 +49,53 @@ def test_hash_endpoint_rejects_missing_text():
 
 def test_hash_endpoint_rejects_non_string_text():
     response = client.post("/hash", json={"text": 123})
+
+    assert response.status_code == 422
+
+
+def test_rsa_endpoint_encrypts_and_decrypts_message():
+    response = client.post(
+        "/rsa/encrypt-decrypt",
+        json={"text": "CipherVault RSA test"},
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["original_message"] == "CipherVault RSA test"
+    assert data["decrypted_message"] == "CipherVault RSA test"
+    assert data["success"] is True
+    assert data["algorithm"] == "RSA-2048"
+
+
+def test_rsa_endpoint_rejects_empty_message():
+    response = client.post(
+        "/rsa/encrypt-decrypt",
+        json={"text": ""},
+    )
+
+    assert response.status_code == 422
+
+
+def test_ecc_endpoint_signs_and_verifies_message():
+    response = client.post(
+        "/ecc/sign-verify",
+        json={"text": "CipherVault ECC test"},
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["original_message"] == "CipherVault ECC test"
+    assert data["signature_verified"] is True
+    assert data["algorithm"] == "ECDSA"
+    assert data["curve"] == "SECP256R1"
+
+
+def test_ecc_endpoint_rejects_empty_message():
+    response = client.post(
+        "/ecc/sign-verify",
+        json={"text": ""},
+    )
 
     assert response.status_code == 422
