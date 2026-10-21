@@ -1,13 +1,12 @@
-import hashlib
 import base64
 import binascii
-
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from fastapi.middleware.cors import CORSMiddleware
+import hashlib
 
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding, rsa, ec
+from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 app = FastAPI(
     title="CipherVault API",
