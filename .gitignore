@@ -9,6 +9,7 @@ Notes.txt
 frontend/node_modules/
 frontend/.next/
 frontend/out/
+frontend/output.txt
 
 # Environment variables and secrets
 .env
