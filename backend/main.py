@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(
     title="CipherVault API",
@@ -16,6 +17,8 @@ app = FastAPI(
     ),
     version="1.0.0",
 )
+
+Instrumentator().instrument(app).expose(app)
 
 # Allow requests from the Next.js development frontend.
 app.add_middleware(
