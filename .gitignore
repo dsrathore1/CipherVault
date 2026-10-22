@@ -17,6 +17,7 @@ frontend/output.txt
 !.env.example
 *.key
 *.pem
+output.txt
 
 # VS Code
 .vscode/
