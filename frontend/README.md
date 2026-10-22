@@ -1,62 +1,118 @@
 # CipherVault Frontend
 
-The CipherVault frontend is a responsive web application built with Next.js, React, JavaScript, and Tailwind CSS. It provides an interactive interface for exploring cryptographic operations, viewing results, and monitoring backend metrics.
-
-The application includes SHA-256 hashing, RSA encryption and decryption, ECC digital signatures, and a dark/light theme toggle.
+The CipherVault frontend is a modern web interface built with Next.js, React, and Tailwind CSS. It provides dedicated interfaces for cryptographic workflows, theme selection, backend connectivity testing, and operational metrics.
 
 ## ✨ Features
 
-- **Cryptography tools:** Interactive interfaces for SHA-256, RSA, and ECC.
-- **SHA-256 hashing:** Generate and copy cryptographic digests.
-- **RSA encryption and decryption:** Interact with the backend's RSA-2048 OAEP implementation.
-- **ECC digital signatures:** Sign messages and verify signatures using ECDSA.
-- **Prometheus metrics dashboard:** Inspect request statistics, errors, process memory, and latency metrics when available.
-- **Dark and light themes:** Switch between themes using `next-themes`.
-- **Input validation:** Display validation errors and handle unsuccessful requests.
-- **Backend connectivity:** Check backend health through the API.
-- **Responsive design:** Use the application across desktop and smaller screens.
-- **Client-side navigation:** Navigate between pages using Next.js.
+- Next.js App Router architecture.
+- React components and client-side interactions.
+- Tailwind CSS styling.
+- SHA-256 hashing interface.
+- Dedicated RSA and ECC pages.
+- Backend connection-testing page.
+- Light and dark theme support.
+- Reusable learning-content components.
+- Metrics dashboard with refresh controls.
+- Login, logout, and session API routes for metrics access.
+- Production build and Docker support.
 
-## 🛠️ Technology Stack
+## 🧰 Technology Stack
 
-| Component | Technology |
+| Technology | Purpose |
 |---|---|
-| Framework | Next.js |
-| UI Library | React |
-| Language | JavaScript |
-| Styling | Tailwind CSS |
-| Theme Management | next-themes |
-| HTTP Requests | Fetch API |
-| Backend | Python FastAPI |
-| Containerization | Docker |
+| Next.js | React framework |
+| React | UI library |
+| JavaScript | Application logic |
+| Tailwind CSS | Styling |
+| npm | Dependency management |
+| ESLint | Linting |
+| Docker | Containerization |
 
-## 🚀 Getting Started
+## 📁 Directory Structure
 
-### Prerequisites
+```text
+frontend/
+├── public/
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   ├── login/
+│   │   │   │   │   └── route.js
+│   │   │   │   ├── logout/
+│   │   │   │   │   └── route.js
+│   │   │   │   └── session/
+│   │   │   │       └── route.js
+│   │   │   └── metrics/
+│   │   │       └── route.js
+│   │   ├── connection-test/
+│   │   │   └── page.js
+│   │   ├── content/
+│   │   │   ├── learning-content.js
+│   │   │   └── learning-modal.js
+│   │   ├── ecc/
+│   │   │   └── page.js
+│   │   ├── hash/
+│   │   │   └── page.js
+│   │   ├── metrics/
+│   │   │   └── page.js
+│   │   ├── rsa/
+│   │   │   └── page.js
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.js
+│   │   ├── page.js
+│   │   ├── theme-provider.js
+│   │   └── theme-toggle.js
+│   ├── components/
+│   │   └── metrics-login.js
+│   └── lib/
+│       └── metrics-auth.js
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── eslint.config.mjs
+├── jsconfig.json
+├── next.config.mjs
+├── package.json
+├── package-lock.json
+└── README.md
+```
 
-Install Node.js and npm. A compatible Node.js version should be used for the version specified by the project's configuration.
+## ⚙️ Prerequisites
 
-### 1. Navigate to the frontend directory
+- Node.js 22
+- npm
+- Git
+- Docker (optional)
 
-From the repository root, run:
+## 🚀 Local Setup
 
-**Windows PowerShell:**
+### 1. Install dependencies
+
+From the repository root:
 
 ```powershell
 cd frontend
+npm ci
 ```
 
-**Linux or WSL:**
+### 2. Configure the backend URL
 
-```bash
-cd frontend
+Review `next.config.mjs` for the API rewrite configuration.
+
+The default hosted backend is:
+
+```text
+https://ciphervault-backend.fastapicloud.dev
 ```
 
-### 2. Install dependencies
-
-```bash
-npm install
-```
+Use the configuration supported by `next.config.mjs` to point the application at a local or alternative backend.
 
 ### 3. Start the development server
 
@@ -64,132 +120,108 @@ npm install
 npm run dev
 ```
 
-Open the application:
-
-http://localhost:3000
-
-Keep the development server running while using the application.
-
-## 📄 Application Routes
-
-| Route | Description |
-|---|---|
-| `/` | Main application landing page |
-| `/hash` | SHA-256 hashing interface |
-| `/connection-test` | Backend connectivity test |
-| `/metrics` | Prometheus metrics dashboard |
-
-The RSA and ECC interfaces are available through the application's cryptography tools and navigation.
-
-## 🔌 Backend Integration
-
-The frontend communicates with the FastAPI backend through its `/api` proxy routes.
-
-The Next.js rewrite configuration uses the `BACKEND_URL` environment variable when provided. Otherwise, it defaults to the deployed CipherVault backend:
-
-https://ciphervault-backend.fastapicloud.dev
-
-For local development, configure `BACKEND_URL` to point to the local backend when required by the application's configuration:
-
-```text
-BACKEND_URL=http://127.0.0.1:8000
-```
-
-Restart the Next.js development server after changing environment configuration.
-
-### API proxy routes
-
-| Frontend route | Purpose |
-|---|---|
-| `/api/health` | Backend health check |
-| `/api/hash` | SHA-256 hashing |
-| `/api/rsa/encrypt-decrypt` | RSA encryption/decryption |
-| `/api/ecc/sign-verify` | ECC signing/verification |
-| `/api/metrics` | Prometheus metrics retrieval |
-
-The frontend forwards requests to the corresponding backend endpoints. Refer to the backend's interactive API documentation for request schemas and response details.
-
-## 📊 Prometheus Metrics Dashboard
-
-Open the dashboard at:
-
-http://localhost:3000/metrics
-
-The page retrieves Prometheus metrics through `/api/metrics` and presents selected operational information, including:
-
-- Total HTTP requests
-- Error response counts
-- Process memory usage
-- Average request latency, when suitable metrics are available
-- Route-level request statistics
-
-The dashboard supports manual refresh and periodic refresh. Metric values depend on the data returned by the backend.
-
-## 🐳 Docker
-
-From the repository root, build and start the application using the project's Compose configuration:
-
-```bash
-docker compose up --build -d
-```
-
 Open:
 
 http://localhost:3000
 
-Inspect the container status:
+## 🛠️ Available Scripts
+
+The following commands are defined for the frontend workflow:
 
 ```bash
-docker compose ps
+npm run dev
+npm run lint
+npm run build
+npm run start
 ```
-
-View frontend logs:
-
-```bash
-docker compose logs -f frontend
-```
-
-Stop the services:
-
-```bash
-docker compose down
-```
-
-The current Compose configuration runs the frontend container and configures it to proxy API requests to the deployed backend.
-
-## 🧪 Development Commands
-
-Run these commands from the frontend directory:
 
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Start the development server |
-| `npm run build` | Build the production application |
-| `npm run start` | Start the production server after a successful build |
-| `npm run lint` | Run the configured lint command, if available in `package.json` |
+| `npm run lint` | Run ESLint checks |
+| `npm run build` | Create a production build |
+| `npm run start` | Start the production server after building |
 
-Run the production build before committing frontend changes:
+## 🔐 Metrics Dashboard
+
+The metrics page is available at:
+
+`/metrics`
+
+It retrieves Prometheus-formatted data through the frontend API route and displays available backend information, including request counts, error counts, process memory, CPU time, and request-latency statistics.
+
+The dashboard includes manual and automatic refresh controls.
+
+The metrics login, logout, and session endpoints are implemented under:
+
+- `/api/auth/login`
+- `/api/auth/logout`
+- `/api/auth/session`
+
+The metrics proxy is implemented under:
+
+- `/api/metrics`
+
+These endpoints depend on the current server-side authentication and environment configuration. Verify authentication behavior and backend connectivity in the deployed environment before relying on the dashboard.
+
+## 🔌 Backend Integration
+
+The frontend communicates with the backend through the configured Next.js API rewrite and API routes.
+
+When running locally:
+
+1. Start the backend.
+2. Verify that its health endpoint responds.
+3. Confirm the frontend points to the intended backend URL.
+4. Start the frontend.
+5. Test the relevant application pages.
+
+## 🐳 Docker
+
+Build the frontend image from the repository root:
 
 ```bash
-npm run build
+docker build -t ciphervault-frontend ./frontend
 ```
 
-## 🎨 Design Principles
+Run the container:
 
-- Consistent dark and light theme support.
-- Clear typography and readable contrast.
-- Balanced card layouts and visual hierarchy.
-- Responsive layouts for different screen sizes.
-- Helpful loading, validation, and error states.
-- A functional interface without unnecessary visual complexity.
+```bash
+docker run --rm -p 3000:3000 \
+  -e BACKEND_URL=https://ciphervault-backend.fastapicloud.dev \
+  ciphervault-frontend
+```
 
-## 🔒 Security Notes
+Review the Dockerfile and Next.js configuration for the current standalone build and runtime requirements.
 
-- Do not place private keys, API credentials, or secrets in client-side code.
-- Frontend validation improves usability but does not replace backend validation.
-- Use HTTPS for deployed environments.
-- Treat cryptographic demonstrations as educational tools rather than a substitute for a security-reviewed production system.
+## 🌐 Deployment
 
-## 📌 Project Status
+The hosted frontend is available at:
 
-The frontend integrates the SHA-256, RSA, and ECC backend operations and includes a dedicated Prometheus metrics dashboard. The project is under active development, with further usability, testing, and documentation improvements possible.
+https://cipher-vault-theta.vercel.app/
+
+The frontend is deployed using Vercel.
+
+Configure production environment variables through Vercel project settings. Keep private credentials and signing secrets server-side; do not expose them using `NEXT_PUBLIC_` variables.
+
+## 🔄 Continuous Integration
+
+The frontend workflow is located at:
+
+`.github/workflows/frontend-ci.yml`
+
+It installs dependencies, runs ESLint, and creates a production build.
+
+## 🔐 Security
+
+- Do not commit `.env.local` or other files containing credentials.
+- Keep passwords, private keys, and signing secrets out of client-side JavaScript.
+- Use server-side routes for operations requiring private configuration.
+- Protect metrics and diagnostic endpoints appropriately.
+- Verify login, logout, session expiry, and API authorization before production use.
+
+## 👤 Maintainer
+
+**DS Rathore** — https://github.com/dsrathore1
+
+For backend API setup and testing, see `backend/README.md`. For the overall architecture and CI/CD workflow, see the root README.

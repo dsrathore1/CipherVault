@@ -1,304 +1,305 @@
-# ◈ CipherVault
+# CipherVault 🔐
 
-### An Interactive Cryptography Learning Platform
+### A Full-Stack Cryptography and Observability Platform
 
-CipherVault is a web-based platform for exploring cryptographic concepts through practical tools and interactive demonstrations. It combines a modern Next.js frontend with a Python FastAPI backend to make cryptography easier to understand and experiment with.
+CipherVault is a web application that brings cryptographic operations and backend observability together in a modern, responsive interface. Built with Next.js and FastAPI, the project combines SHA-256 hashing, RSA and ECC workflows, a metrics dashboard, Docker containerization, and automated CI/CD pipelines.
 
-The platform currently supports SHA-256 hashing, RSA-2048 encryption and decryption, and Elliptic Curve Cryptography (ECC) digital signatures.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19-149ECA?logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/FastAPI-Python-009688?logo=fastapi" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker" alt="Docker" />
+  <img src="https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions" alt="GitHub Actions" />
+</p>
+
+## 🌐 Live Application
+
+| Service | URL |
+|---|---|
+| Frontend | https://cipher-vault-theta.vercel.app/ |
+| Backend API | https://ciphervault-backend.fastapicloud.dev/ |
+| Backend health check | https://ciphervault-backend.fastapicloud.dev/health |
 
 ## ✨ Features
 
-- **SHA-256 Hashing:** Generate 256-bit cryptographic digests from text.
-- **RSA-2048 Encryption and Decryption:** Explore public-key cryptography using RSA-OAEP with SHA-256.
-- **ECC Digital Signatures:** Sign and verify messages using ECDSA with the NIST P-256 curve and SHA-256.
-- **Input Validation:** Validate requests and handle invalid inputs.
-- **Copy to Clipboard:** Copy cryptographic results conveniently.
-- **REST API:** Use FastAPI endpoints for cryptographic operations.
-- **Health Checks:** Verify backend availability.
-- **Prometheus Monitoring:** Expose application metrics for monitoring and analysis.
-- **Dark and Light Themes:** Switch between themes using the frontend theme toggle.
-- **Responsive Interface:** Explore cryptographic tools through a clean, interactive interface.
-- **Docker Support:** Build and run the application using Docker and Docker Compose.
+### Cryptography
+- **SHA-256 hashing:** Generate cryptographic hashes from input data.
+- **RSA:** Explore RSA cryptographic operations through a dedicated interface.
+- **Elliptic Curve Cryptography (ECC):** Explore elliptic-curve operations through a dedicated interface.
 
-## 🛠️ Technology Stack
+### User Interface
+- Next.js App Router architecture.
+- Responsive application layout.
+- Dedicated pages for hashing, RSA, ECC, and connection testing.
+- Light and dark theme support with a theme toggle.
+- Learning-content components for supplementary explanations.
 
-| Component | Technology |
-|---|---|
-| Frontend | Next.js, React, JavaScript |
-| Styling | Tailwind CSS |
-| Theme Management | next-themes |
-| Backend | Python, FastAPI |
-| ASGI Server | Uvicorn |
-| Cryptographic Library | Python `cryptography` |
-| Hashing | Python `hashlib` |
-| Monitoring | Prometheus FastAPI Instrumentator |
-| Testing | pytest |
-| Linting | Ruff |
-| Containerization | Docker, Docker Compose |
-| CI | GitHub Actions |
+### Observability
+- Metrics dashboard for backend operational information.
+- Prometheus-compatible metrics retrieval.
+- Request counts, error counts, process information, and available latency statistics.
+- Manual and automatic metrics refresh controls.
+- Login, logout, and session API routes for metrics access.
+
+### Engineering and Delivery
+- FastAPI backend.
+- Dockerfiles for frontend and backend.
+- Docker Compose configuration.
+- Backend and frontend CI workflows.
+- Production Docker image publishing workflow.
+- Automated linting, testing, and frontend production builds.
 
 ## 🏗️ Architecture
 
-CipherVault uses a frontend-backend architecture.
+```text
+                       User
+                        |
+                        v
+              +--------------------+
+              | Next.js Frontend   |
+              | React + Tailwind   |
+              +--------------------+
+                        |
+                        v
+              +--------------------+
+              | Next.js API Routes |
+              | Metrics / Sessions |
+              +--------------------+
+                        |
+                        v
+              +--------------------+
+              | FastAPI Backend    |
+              | Cryptography APIs  |
+              | Health / Metrics   |
+              +--------------------+
 
-1. The user interacts with the Next.js frontend.
-2. The frontend sends requests to the backend through the `/api` proxy.
-3. FastAPI validates requests and performs the requested cryptographic operation.
-4. The backend returns results in JSON format.
-5. Prometheus-compatible metrics are exposed for monitoring.
+        GitHub Repository and Actions
+                        |
+             +----------+----------+
+             |                     |
+             v                     v
+         Backend CI            Frontend CI
+             |                     |
+             +----------+----------+
+                        |
+                        v
+                Production CD
+                        |
+                        v
+                  Docker Hub
+```
 
-The frontend can use the deployed backend or a locally running backend, depending on the configured environment.
+## 🧰 Technology Stack
 
-## 🚀 Getting Started
+| Layer | Technology |
+|---|---|
+| Frontend framework | Next.js |
+| UI library | React |
+| Frontend language | JavaScript |
+| Styling | Tailwind CSS |
+| Backend framework | FastAPI |
+| Backend language | Python |
+| Testing | Pytest, HTTPX |
+| Backend linting | Ruff |
+| Frontend linting | ESLint |
+| Containerization | Docker |
+| Container orchestration for local development | Docker Compose |
+| CI/CD | GitHub Actions |
+| Frontend hosting | Vercel |
+| Backend hosting | FastAPI Cloud |
+| Container registry | Docker Hub |
 
-### Prerequisites
+## 📁 Project Structure
+
+```text
+CipherVault/
+├── .github/
+│   └── workflows/
+│       ├── backend-ci.yml
+│       ├── frontend-ci.yml
+│       └── production-cd.yml
+├── .vscode/
+│   └── settings.json
+├── backend/
+│   ├── .fastapicloud/
+│   ├── tests/
+│   │   └── test_main.py
+│   ├── .dockerignore
+│   ├── Dockerfile
+│   ├── main.py
+│   ├── requirements.txt
+│   └── README.md
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── api/
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── login/
+│   │   │   │   │   ├── logout/
+│   │   │   │   │   └── session/
+│   │   │   │   └── metrics/
+│   │   │   ├── connection-test/
+│   │   │   ├── content/
+│   │   │   ├── ecc/
+│   │   │   ├── hash/
+│   │   │   ├── metrics/
+│   │   │   ├── rsa/
+│   │   │   ├── globals.css
+│   │   │   ├── layout.js
+│   │   │   ├── page.js
+│   │   │   ├── theme-provider.js
+│   │   │   └── theme-toggle.js
+│   │   ├── components/
+│   │   │   └── metrics-login.js
+│   │   └── lib/
+│   │       └── metrics-auth.js
+│   ├── .dockerignore
+│   ├── Dockerfile
+│   ├── eslint.config.mjs
+│   ├── jsconfig.json
+│   ├── next.config.mjs
+│   ├── package.json
+│   └── README.md
+├── docker-compose.yml
+└── README.md
+```
+
+## ⚙️ Prerequisites
 
 Install the following tools:
 
-- [Git](https://git-scm.com/)
-- [Python](https://www.python.org/downloads/)
-- [Node.js and npm](https://nodejs.org/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker Engine with Docker Compose, if using containers
+- Git
+- Python 3.11
+- Node.js 22
+- npm
+- Docker Desktop (optional)
+
+## 🚀 Local Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/dsrathore1/CipherVault.git
 cd CipherVault
 ```
 
-Replace `YOUR_GITHUB_REPOSITORY_URL` with your repository's actual URL.
-
 ### 2. Start the backend
-
-Open a terminal in the repository root.
-
-**Windows PowerShell:**
 
 ```powershell
 cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m uvicorn main:app --reload
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
-**Linux or WSL:**
+The backend normally starts at `http://127.0.0.1:8000`.
 
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m uvicorn main:app --reload
-```
+Check the health endpoint:
 
-The local backend is available at:
-
-- API base: http://127.0.0.1:8000
-- Interactive API documentation: http://127.0.0.1:8000/docs
-- Health check: http://127.0.0.1:8000/health
-- Prometheus metrics: http://127.0.0.1:8000/metrics
-
-Keep the backend terminal running.
+http://127.0.0.1:8000/health
 
 ### 3. Start the frontend
 
-Open a second terminal in the repository root.
+Open a separate terminal:
 
-```bash
+```powershell
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-Open the application at:
+Open http://localhost:3000.
 
-http://localhost:3000
+The frontend's backend URL and rewrite behavior are configured in `frontend/next.config.mjs`. Review that file when running against a local backend instead of the deployed service.
 
-The frontend's `/api/*` routes proxy requests to the configured backend. When running locally, ensure the backend URL configuration points to your local API if you want to use the local backend rather than the deployed service.
+## 🧪 Quality Checks
 
-### 4. Run tests and quality checks
+### Backend
 
-From the `backend` directory, activate the virtual environment and run:
-
-```bash
-python -m pytest -v
-python -m ruff check .
-python -m pip check
+```powershell
+cd backend
+ruff check main.py tests/test_main.py
+pytest tests/test_main.py -v
 ```
 
-From the `frontend` directory, run:
+### Frontend
 
-```bash
+```powershell
+cd frontend
+npm run lint
 npm run build
 ```
 
-These commands test the backend, check Python code quality and dependencies, and build the frontend for production.
+## 🐳 Docker
 
-## 🐳 Run with Docker Compose
-
-From the repository root, where `docker-compose.yml` is located:
+Build the backend image from the repository root:
 
 ```bash
-docker compose up --build -d
+docker build -t ciphervault-backend ./backend
 ```
 
-Open the frontend at:
-
-http://localhost:3000
-
-Check the container status:
+Build the frontend image:
 
 ```bash
-docker compose ps
+docker build -t ciphervault-frontend ./frontend
 ```
 
-View service logs:
+Start the services defined by the Compose file:
 
 ```bash
-docker compose logs -f
+docker compose up --build
 ```
 
-Stop the services:
+The root Compose configuration currently defines the frontend service. Review `docker-compose.yml` for its backend URL and port configuration before running the application.
 
-```bash
-docker compose down
-```
+## 🔄 CI/CD Pipeline
 
-The Compose configuration currently runs the frontend container and configures it to proxy API requests to the deployed backend.
+The repository contains three GitHub Actions workflows.
 
-## 📦 Docker Hub Images
-
-Prebuilt images are available under the Docker Hub account `prayagraj55`.
-
-| Component | Image |
+| Workflow | Responsibility |
 |---|---|
-| Backend | `prayagraj55/ciphervault-backend:latest` |
-| Frontend | `prayagraj55/ciphervault-frontend:latest` |
+| `backend-ci.yml` | Install backend dependencies, run Ruff, and execute tests |
+| `frontend-ci.yml` | Install frontend dependencies, run ESLint, and create a production build |
+| `production-cd.yml` | Publish backend and frontend Docker images following successful CI checks |
 
-- [Backend image repository](https://hub.docker.com/r/prayagraj55/ciphervault-backend)
-- [Frontend image repository](https://hub.docker.com/r/prayagraj55/ciphervault-frontend)
+The publishing workflow uses these Docker Hub repositories:
 
-Pull the images:
+- `prayagraj55/ciphervault-backend`
+- `prayagraj55/ciphervault-frontend`
 
-```bash
-docker pull prayagraj55/ciphervault-backend:latest
-docker pull prayagraj55/ciphervault-frontend:latest
-```
+Image tags include `latest` and the corresponding commit SHA.
 
-To run the application using the published images, use a Compose configuration that references these images and provides the required backend URL. The published images are backups of the built application; ensure their configuration matches your intended deployment environment.
+The workflows require correctly configured GitHub Actions permissions and Docker Hub credentials.
 
-## 🔌 API Reference
+## 🔐 Security Considerations
 
-The backend provides the following principal endpoints.
+- Store credentials and signing secrets in environment variables or deployment secret stores.
+- Never commit `.env.local` or other files containing secrets.
+- Do not expose private credentials through browser-visible environment variables.
+- Review authentication and authorization on operational endpoints before public deployment.
+- Use HTTPS in production.
+- Do not use the application for sensitive data without independently reviewing the cryptographic implementation and deployment security.
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/health` | Check backend availability |
-| POST | `/hash` | Generate a SHA-256 digest |
-| POST | `/rsa/encrypt-decrypt` | Perform RSA encryption/decryption operations |
-| POST | `/ecc/sign-verify` | Perform ECC signing/verification operations |
-| GET | `/metrics` | Expose Prometheus metrics |
+## 🛣️ Potential Future Improvements
 
-Request and response schemas are available through the interactive API documentation:
+- Expand automated integration and end-to-end testing.
+- Improve observability and operational alerting.
+- Add more detailed API and architecture documentation.
+- Strengthen deployment verification and security testing.
+- Improve the learning experience with interactive cryptography explanations.
 
-http://127.0.0.1:8000/docs
+## 👤 Author
 
-### Example: SHA-256
+**DS Rathore**
 
-Request:
-
-```http
-POST /hash
-Content-Type: application/json
-```
-
-JSON body:
-
-```json
-{
-  "text": "CipherVault"
-}
-```
-
-The API returns the input, the selected hashing algorithm, and the generated digest in JSON format.
-
-### Frontend API routes
-
-The frontend exposes corresponding proxy routes under `/api`, including:
-
-- `/api/health`
-- `/api/hash`
-- `/api/rsa/encrypt-decrypt`
-- `/api/ecc/sign-verify`
-- `/api/metrics`
-
-The proxy forwards requests to the configured backend. Backend endpoint availability and response schemas should be verified against the running application.
-
-## 📊 Prometheus Monitoring
-
-CipherVault exposes a Prometheus-compatible metrics endpoint through the FastAPI backend.
-
-Backend metrics endpoint:
-
-http://127.0.0.1:8000/metrics
-
-The frontend includes a dedicated metrics dashboard at:
-
-http://localhost:3000/metrics
-
-The dashboard presents request statistics, response errors, process memory information, and request latency where the corresponding metrics are available.
-
-Metrics can help developers inspect application activity and diagnose performance issues during development and deployment.
-
-## 🔐 Cryptographic Concepts
-
-### SHA-256
-
-SHA-256 is a cryptographic hash function that produces a 256-bit digest. It is useful for understanding data integrity and digital fingerprints.
-
-Hashing is a one-way operation; it is not encryption and does not provide a decryption operation.
-
-### RSA-2048
-
-RSA is a public-key cryptographic algorithm. CipherVault demonstrates RSA encryption and decryption using RSA-2048 with OAEP padding and SHA-256.
-
-For this configuration, the maximum plaintext size per encryption operation is 190 bytes. Longer messages require a different design, such as hybrid encryption.
-
-### Elliptic Curve Cryptography
-
-ECC provides public-key cryptographic operations based on elliptic-curve mathematics. CipherVault demonstrates digital signatures using ECDSA, the SECP256R1 (NIST P-256) curve, and SHA-256.
-
-Signing and verification demonstrate message authenticity and integrity. A digital signature is not encryption.
-
-## 🔒 Security Considerations
-
-- Do not enter confidential information, passwords, private keys, or production secrets into a learning application.
-- SHA-256 hashing does not encrypt data and cannot be used to recover the original message.
-- RSA encryption and ECDSA signatures serve different purposes.
-- Use established cryptographic libraries instead of implementing cryptographic primitives from scratch.
-- Validate requests on the backend, even when frontend validation is present.
-- Protect private keys and never expose them in frontend code or public repositories.
-- Configure CORS, HTTPS, secrets, and other security controls appropriately before production deployment.
-- Treat educational demonstrations as learning tools, not as a substitute for a security-reviewed production cryptographic system.
-
-## 🧪 Continuous Integration and Code Quality
-
-The project includes backend checks through GitHub Actions and supports local testing with pytest, linting with Ruff, and dependency verification with pip.
-
-Run the checks locally before pushing changes to your development branch.
-
-## 🎯 Project Objective
-
-CipherVault combines practical cryptography demonstrations with modern full-stack development. It provides experience with frontend development, REST APIs, cryptographic libraries, automated testing, containerization, CI, and application monitoring.
-
-## 📌 Project Status
-
-CipherVault is under active development. The core SHA-256, RSA, and ECC functionality, frontend integration, health endpoint, Docker configuration, and Prometheus monitoring have been implemented.
-
-Future improvements may include expanded educational modules, additional automated frontend tests, and more comprehensive deployment and observability configurations.
+GitHub: https://github.com/dsrathore1
 
 ## 📄 License
 
-No open-source license has been selected yet. Until a license is added, do not assume the repository is licensed for unrestricted redistribution or reuse.
+Add license information here if a license is included in the repository.
+
+---
+
+*CipherVault — Cryptography, observability, and automated delivery in one application.*
