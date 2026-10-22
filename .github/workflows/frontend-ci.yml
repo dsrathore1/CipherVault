@@ -1,0 +1,50 @@
+name: "CipherVault | Frontend CI"
+
+on:
+    push:
+        branches:
+            - development
+            - pre-deployment
+            - main
+
+    pull_request:
+        branches:
+            - development
+            - pre-deployment
+            - main
+
+permissions:
+    contents: read
+
+concurrency:
+    group: frontend-ci-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    frontend-checks:
+        name: "Frontend Quality Gate"
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: frontend
+
+        steps:
+            - name: "Checkout Repository"
+              uses: actions/checkout@v4
+
+            - name: "Set Up Node.js"
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+                  cache: npm
+                  cache-dependency-path: frontend/package-lock.json
+
+            - name: "Install Frontend Dependencies"
+              run: npm ci
+
+            - name: "Run ESLint"
+              run: npm run lint
+
+            - name: "Build Next.js Application"
+              run: npm run build
