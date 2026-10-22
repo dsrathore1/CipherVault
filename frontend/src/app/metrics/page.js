@@ -1,7 +1,7 @@
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import MetricsLogin from "@/components/metrics-login";
 
 function parsePrometheusMetrics(text) {
     const metrics = [];
@@ -75,12 +75,39 @@ function StatCard({ label, value, detail }) {
 }
 
 export default function MetricsPage() {
+    const [authStatus, setAuthStatus] = useState("checking");
     const [metrics, setMetrics] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState("");
     const [lastUpdated, setLastUpdated] = useState(null);
     const [autoRefresh, setAutoRefresh] = useState(true);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function checkSession() {
+            try {
+                const response = await fetch("/api/auth/session", {
+                    cache: "no-store",
+                });
+
+                if (!cancelled) {
+                    setAuthStatus(response.ok ? "authenticated" : "unauthenticated");
+                }
+            } catch {
+                if (!cancelled) {
+                    setAuthStatus("unauthenticated");
+                }
+            }
+        }
+
+        checkSession();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const loadMetrics = useCallback(async (manual = false) => {
         if (manual) setRefreshing(true);
@@ -212,6 +239,32 @@ export default function MetricsPage() {
         };
     }, [metrics]);
 
+    if (authStatus === "checking") {
+        return (
+            <main className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-300">
+                <p className="text-sm">Verifying metrics session...</p>
+            </main>
+        );
+    }
+
+    if (authStatus === "unauthenticated") {
+        return (
+            <MetricsLogin
+                onLogin={() => setAuthStatus("authenticated")}
+            />
+        );
+    }
+
+    async function handleLogout() {
+        try {
+            await fetch("/api/auth/logout", {
+                method: "POST",
+            });
+        } finally {
+            window.location.replace("/metrics");
+        }
+    }
+
     return (
         <main className="min-h-screen bg-slate-950 text-slate-100">
             <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
@@ -245,6 +298,13 @@ export default function MetricsPage() {
                             className="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium hover:border-cyan-500 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {refreshing ? "Refreshing…" : "Refresh"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="rounded-lg border border-rose-900 bg-rose-950/40 px-4 py-2 text-sm font-medium text-rose-300 transition hover:border-rose-700 hover:bg-rose-900/50"
+                        >
+                            Logout
                         </button>
                     </div>
                 </header>
