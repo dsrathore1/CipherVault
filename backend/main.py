@@ -6,8 +6,8 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
 from prometheus_fastapi_instrumentator import Instrumentator
+from pydantic import BaseModel, Field
 
 app = FastAPI(
     title="CipherVault API",
